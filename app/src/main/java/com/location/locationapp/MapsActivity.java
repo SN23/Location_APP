@@ -1,10 +1,12 @@
 package com.location.locationapp;
 
+import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -61,8 +63,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void onSearch(View view)
     {
+
         EditText search = (EditText)findViewById(R.id.map_search);
         String location = search.getText().toString();
+        hideKeyboard(this);
         List<Address> addressList=null;
 
         if(location!=null & location!="")
@@ -82,8 +86,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
 
-
-
         }
+
+    }
+
+
+    public static void hideKeyboard(Activity activity)
+    {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 }
