@@ -6,6 +6,10 @@
 
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=DD:7A:69:BD:36:60:B6:58:F3:50:16:C4:01:F8:A1:0E:8C:7B:1B:8B%3Bcom.location.locationapp
 
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=80:59:F1:1F:24:A7:18:9C:57:61:EE:DF:80:7A:07:5B:B7:50:12:C6%3Bcom.location.locationapp
+
+    80:59:F1:1F:24:A7:18:9C:57:61:EE:DF:80:7A:07:5B:B7:50:12:C6
+
     You can also add your credentials to an existing key, using this line:
     DD:7A:69:BD:36:60:B6:58:F3:50:16:C4:01:F8:A1:0E:8C:7B:1B:8B;com.location.locationapp
 
@@ -14,8 +18,12 @@
 
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
+
+    vinny key AIzaSyDaOEbRkl8JJ0fiX1LrvUw2Qf-kLo_lxTw
+
+    sukhjinder key AIzaSyAMe_d8ogUalpVVafxx0rPDkJRroSyLgOk
     -->
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
-        AIzaSyAMe_d8ogUalpVVafxx0rPDkJRroSyLgOk
+        AIzaSyDaOEbRkl8JJ0fiX1LrvUw2Qf-kLo_lxTw
     </string>
 </resources>

@@ -20,6 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.*;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -54,6 +59,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setMyLocationEnabled(true);
+
+        Realm realm = Realm.getInstance(this); //Initializes Realm
+        RealmResults<Location> result = realm.where(Location.class).findAll();
+        if (result.size()>0) {
+            for (int i = 0; i < result.size(); i++) {
+                Location tempLoc = result.get(i);
+                LatLng tempLatLng = new LatLng(result.get(i).getLatitude(), result.get(i).getLongitude());
+                mMap.addMarker(new MarkerOptions().position(tempLatLng).title("Marker #: " + i));
+            }
+        }
+
     }
 
     /**
@@ -83,6 +99,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng latlng = new LatLng(addressList.get(0).getLatitude(),addressList.get(0).getLongitude());
                 mMap.addMarker(new MarkerOptions().position(latlng).title("User Marker"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,15));  //20 is the zoom level
+
+                //This is the Realm logic.
+                Realm realm = Realm.getInstance(this); //Initializes Realm
+                Location loc = new Location(); //Initalizes the Location class
+                loc.setLatitude(addressList.get(0).getLatitude()); //Sets the lat
+                loc.setLongitude(addressList.get(0).getLongitude()); //Sets the long
+                loc.setPK((int)addressList.get(0).getLatitude() + (int)addressList.get(0).getLongitude());
+                realm.beginTransaction(); //Starts the save
+                realm.copyToRealmOrUpdate(loc); //Saves
+                realm.commitTransaction(); //Ends the save
+
             }
 
 
