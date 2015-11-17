@@ -4,25 +4,54 @@
     android:orientation="vertical" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical" >
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal" >
+
+
+            <EditText
+                android:layout_width="262dp"
+                android:layout_height="match_parent"
+                android:id="@+id/map_search"
+                android:layout_gravity="left" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Search"
+                android:id="@+id/search_button"
+                android:onClick="onSearch" />
+
+        </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+                  android:id="@+id/title_layout"
+        android:visibility="gone">
 
 
         <EditText
             android:layout_width="262dp"
             android:layout_height="match_parent"
-            android:id="@+id/map_search"
-            android:layout_gravity="left" />
+            android:id="@+id/map_title"
+            android:layout_gravity="left"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Search"
-            android:id="@+id/search_button"
-            android:onClick="onSearch" />
+            android:text="Set Title"
+            android:id="@+id/setTitle_button"
+            android:onClick="onSearch"/>
 
 
+    </LinearLayout>
     </LinearLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

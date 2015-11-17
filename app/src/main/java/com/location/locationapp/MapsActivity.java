@@ -8,16 +8,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.*;
@@ -28,6 +31,8 @@ import io.realm.annotations.PrimaryKey;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    ArrayList<String> mMarkers = new ArrayList<>();
 
 
     @Override
@@ -56,7 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(sydney).draggable(true).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setMyLocationEnabled(true);
 
@@ -66,9 +71,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             for (int i = 0; i < result.size(); i++) {
                 Location tempLoc = result.get(i);
                 LatLng tempLatLng = new LatLng(result.get(i).getLatitude(), result.get(i).getLongitude());
-                mMap.addMarker(new MarkerOptions().position(tempLatLng).title("Marker #: " + i));
+
+                String locationName = result.get(i).getName();
+
+                MarkerOptions mo = new MarkerOptions().position(tempLatLng).title(locationName + ": " + i);
+
+                mMap.addMarker(mo);
+                Marker mkr = mMap.addMarker(mo);
+
+                mMarkers.add(mkr.getId());
             }
         }
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            public void onInfoWindowClick(Marker marker) {
+                System.out.println(marker.getId());
+            }
+        });
 
     }
 
@@ -81,6 +100,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
 
         EditText search = (EditText)findViewById(R.id.map_search);
+        LinearLayout titleLayout = (LinearLayout)findViewById(R.id.title_layout);
+
+        titleLayout.setVisibility(view.VISIBLE); //If you click search, the EditText and Buttons to change the title become visible. 
+
         String location = search.getText().toString();
         hideKeyboard(this);
         List<Address> addressList=null;
@@ -96,8 +119,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if(addressList.get(0)!=null)
             {
+
+                for(int j = 0; j < mMarkers.size(); j++){
+                    System.out.println(mMarkers.get(j));
+                }
+
                 LatLng latlng = new LatLng(addressList.get(0).getLatitude(),addressList.get(0).getLongitude());
-                mMap.addMarker(new MarkerOptions().position(latlng).title("User Marker"));
+
+                MarkerOptions mo = new MarkerOptions().position(latlng).draggable(true).title(location);
+
+                mMap.addMarker(mo);
+                Marker mkr = mMap.addMarker(mo);
+
+                mMarkers.add(mkr.getId());
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,15));  //20 is the zoom level
 
                 //This is the Realm logic.
@@ -105,7 +140,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Location loc = new Location(); //Initalizes the Location class
                 loc.setLatitude(addressList.get(0).getLatitude()); //Sets the lat
                 loc.setLongitude(addressList.get(0).getLongitude()); //Sets the long
-                loc.setPK((int)addressList.get(0).getLatitude() + (int)addressList.get(0).getLongitude());
+                loc.setName(location); //Sets the name
+                loc.setPK((int)addressList.get(0).getLatitude() + (int)addressList.get(0).getLongitude()); //Sets the PK (Might want to make this less bad)
                 realm.beginTransaction(); //Starts the save
                 realm.copyToRealmOrUpdate(loc); //Saves
                 realm.commitTransaction(); //Ends the save
@@ -114,6 +150,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         }
+
+    }
+
+    public void onTitle(View view)
+    {
+
+        //Need to figure out how to actually grab a marker by its ID, which we have saved in mMarkers.
+        EditText setTitle = (EditText)findViewById(R.id.map_title);
+        LinearLayout titleLayout = (LinearLayout)findViewById(R.id.title_layout);
+
+        String markerID = mMarkers.get(mMarkers.size()-1);
+        //Now the string MarkerID is the ID we want, but I don't know how to actually grab the marker this is attached to...
+
+
+
+
+
 
     }
 
