@@ -18,7 +18,8 @@
                 android:layout_width="262dp"
                 android:layout_height="match_parent"
                 android:id="@+id/map_search"
-                android:layout_gravity="left" />
+                android:layout_gravity="left"
+                android:hint="Enter location name"/>
 
             <Button
                 android:layout_width="match_parent"
@@ -41,7 +42,8 @@
             android:layout_width="262dp"
             android:layout_height="match_parent"
             android:id="@+id/map_title"
-            android:layout_gravity="left"/>
+            android:layout_gravity="left"
+            android:hint="Enter marker title"/>
 
         <Button
             android:layout_width="match_parent"
