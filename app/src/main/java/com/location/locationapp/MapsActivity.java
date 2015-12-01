@@ -5,7 +5,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -26,9 +25,6 @@ import io.realm.*;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
-//    ArrayList<String> mMarkers = new ArrayList<>();
-
     private ArrayList<Marker> Markers= new ArrayList<>();// Holds a list of Markers
     private static int counter = 0;
 
@@ -69,15 +65,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             for (int i = 0; i < result.size(); i++) {
                 Location tempLoc = result.get(i);
                 LatLng tempLatLng = new LatLng(result.get(i).getLatitude(), result.get(i).getLongitude());
-
                 String locationName = result.get(i).getName();
-
                 MarkerOptions mo = new MarkerOptions().position(tempLatLng).title(result.get(i).getName());
-
                 mMap.addMarker(mo);
                 Marker mkr = mMap.addMarker(mo);
-
-//                mMarkers.add(mkr.getId());
                 Markers.add(mkr); //Adds Marker to ArrayList
             }
         }
@@ -120,19 +111,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if(addressList.get(0)!=null)
             {
-
-//                for(int j = 0; j < mMarkers.size(); j++){
-//                    System.out.println(mMarkers.get(j));
-//                }
-
                 LatLng latlng = new LatLng(addressList.get(0).getLatitude(),addressList.get(0).getLongitude());
-
                 MarkerOptions mo = new MarkerOptions().position(latlng).draggable(false).title(title);
-
                 mMap.addMarker(mo);
                 Marker mkr = mMap.addMarker(mo);
 
-//                mMarkers.add(mkr.getId());
                 Markers.add(mkr);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,15));  //20 is the zoom level
@@ -150,22 +133,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
 
+            search.setText("");
+            setTitle.setText("");
 
         }
 
     }
 
-//    public void onTitle(View view)
-//    {
-//
-//        //Need to figure out how to actually grab a marker by its ID, which we have saved in mMarkers.
-//        EditText setTitle = (EditText)findViewById(R.id.map_title);
-//        LinearLayout titleLayout = (LinearLayout)findViewById(R.id.title_layout);
-//
-//        String markerID = mMarkers.get(mMarkers.size()-1);
-//        //Now the string MarkerID is the ID we want, but I don't know how to actually grab the marker this is attached to...
-//
-//    }
 
 
     public static void hideKeyboard(Activity activity)
