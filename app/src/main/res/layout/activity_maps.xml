@@ -21,6 +21,7 @@
                 android:layout_gravity="left"
                 android:hint="Enter location name"/>
 
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,28 +33,38 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
                   android:id="@+id/title_layout"
-        android:visibility="gone">
+        android:weightSum="1">
 
 
         <EditText
-            android:layout_width="262dp"
+            android:layout_width="170dp"
             android:layout_height="match_parent"
             android:id="@+id/map_title"
             android:layout_gravity="left"
-            android:hint="Enter marker title"/>
+            android:hint="Enter marker title"
+            android:layout_weight="1.01" />
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set Title"
-            android:id="@+id/setTitle_button"
-            android:onClick="onSearch"/>
+            android:text="Next"
+            android:id="@+id/next"
+            android:onClick="Next"
+            android:layout_gravity="right" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prev"
+            android:id="@+id/previous"
+            android:onClick="Previous" />
 
 
     </LinearLayout>
+
     </LinearLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
