@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 //        mMap.setMyLocationEnabled(true);
 
-        Realm realm = Realm.getInstance(this); //Initializes Realm
+        final Realm realm = Realm.getInstance(this); //Initializes Realm
         RealmResults<Location> result = realm.where(Location.class).findAll();
         if (result.size()>0) {
             for (int i = 0; i < result.size(); i++) {
@@ -67,8 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng tempLatLng = new LatLng(result.get(i).getLatitude(), result.get(i).getLongitude());
                 String locationName = result.get(i).getName();
                 MarkerOptions mo = new MarkerOptions().position(tempLatLng).title(result.get(i).getName());
-                mMap.addMarker(mo);
-                Marker mkr = mMap.addMarker(mo);
+                Marker mkr=mMap.addMarker(mo);
+
                 Markers.add(mkr); //Adds Marker to ArrayList
             }
         }
@@ -79,7 +80,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-    }
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+
+                LatLng markerPos=marker.getPosition();
+                String markerLocationName=marker.getTitle();
+                String markerSubCategoryName=marker.getSnippet();
+
+
+                System.out.println(marker.getTitle());
+
+                final Button deleteButton = (Button)findViewById(R.id.delete);
+                final Button nextButton = (Button)findViewById(R.id.next);
+                final Button previousButton = (Button)findViewById(R.id.previous);
+
+                deleteButton.setVisibility(View.VISIBLE);
+                nextButton.setVisibility(View.GONE);
+                previousButton.setVisibility(View.GONE);
+
+
+
+                deleteButton.setOnClickListener( new View.OnClickListener() {
+                    public void onClick(View v)
+                    {
+                        RealmResults<Location> result = realm.where(Location.class)
+                                .equalTo("PK", (int)marker.getPosition().latitude + (int)marker.getPosition().longitude)
+                                .findAll();
+
+                        realm.beginTransaction();
+                        result.clear();
+                        realm.commitTransaction();
+
+                        marker.remove();
+                        deleteButton.setVisibility(View.GONE);
+                        nextButton.setVisibility(View.VISIBLE);
+                        previousButton.setVisibility(View.VISIBLE);
+                    }
+                });
+
+
+//                marker.remove();
+//
+//                MarkerOptions markerOptions =
+//                        new MarkerOptions().position(markerPos)
+//                                .title(markerLocationName)
+//                                .snippet(markerSubCategoryName);
+//                mMap.addMarker(markerOptions);
+                return false;
+
+            }
+        });
+
+
+
+        }
 
     /**
      * Gets the inputted address from user and uses it to get longitude and latitude
@@ -113,8 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             {
                 LatLng latlng = new LatLng(addressList.get(0).getLatitude(),addressList.get(0).getLongitude());
                 MarkerOptions mo = new MarkerOptions().position(latlng).draggable(false).title(title);
-                mMap.addMarker(mo);
-                Marker mkr = mMap.addMarker(mo);
+                Marker mkr=mMap.addMarker(mo);
 
                 Markers.add(mkr);
 
@@ -144,14 +199,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public static void hideKeyboard(Activity activity)
     {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
 //  Moves the screen to the next Marker location
     public void Next(View view){
 
-        if(counter==Markers.size())
+        if(counter==Markers.size()-1)
         {
             counter=0;
         }
@@ -160,7 +215,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mkr.getPosition(),15));  //20 is the zoom level
     }
 
-// Moves the screen to the previous Marker location
+
+    // Moves the screen to the previous Marker location
     public void Previous(View view)
     {
         if(counter==0){
@@ -171,5 +227,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mkr=Markers.get(counter);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mkr.getPosition(),15));  //20 is the zoom level
     }
+
+//    public boolean onMarkerClick(Marker marker) { //Called when a marker has been clicked or tapped.
+//
+//        LatLng markerPos=marker.getPosition();
+//        String markerLocationName=marker.getTitle();
+//        String markerSubCategoryName=marker.getSnippet();
+//
+//        marker.remove();
+//
+//        MarkerOptions markerOptions =
+//                new MarkerOptions().position(markerPos)
+//                        .title(markerLocationName)
+//                        .snippet(markerSubCategoryName);// Changing marker icon
+//        mMap.addMarker(markerOptions);
+//        return false;
+//    }
+
 
 }

@@ -62,6 +62,14 @@
             android:id="@+id/previous"
             android:onClick="Previous" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:id="@+id/delete"
+            android:onClick="Delete"
+            android:visibility="gone"/>
+
 
     </LinearLayout>
 
