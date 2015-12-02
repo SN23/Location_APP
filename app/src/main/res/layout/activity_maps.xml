@@ -27,7 +27,16 @@
                 android:layout_height="wrap_content"
                 android:text="Search"
                 android:id="@+id/search_button"
-                android:onClick="onSearch" />
+                android:onClick="onSearch"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:id="@+id/edit_button"
+                android:onClick="Edit"
+                android:visibility="gone"/>
+
 
         </LinearLayout>
 
@@ -69,6 +78,15 @@
             android:id="@+id/delete"
             android:onClick="Delete"
             android:visibility="gone"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done"
+            android:id="@+id/done"
+            android:onClick="Done"
+            android:visibility="gone"/>
+
 
 
     </LinearLayout>

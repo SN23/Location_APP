@@ -85,9 +85,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(final Marker marker) {
 
-                LatLng markerPos=marker.getPosition();
-                String markerLocationName=marker.getTitle();
-                String markerSubCategoryName=marker.getSnippet();
+                final LatLng markerPos=marker.getPosition();
+                final String markerLocationName=marker.getTitle();
+                final String markerSubCategoryName=marker.getSnippet();
 
 
                 System.out.println(marker.getTitle());
@@ -95,18 +95,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final Button deleteButton = (Button)findViewById(R.id.delete);
                 final Button nextButton = (Button)findViewById(R.id.next);
                 final Button previousButton = (Button)findViewById(R.id.previous);
+                final Button editButton = (Button)findViewById(R.id.edit_button);
+                final Button doneButton = (Button)findViewById(R.id.done);
+                final Button searchButton = (Button)findViewById(R.id.search_button);
+
+                final EditText titleET = (EditText)findViewById(R.id.map_search);
+                final EditText titleSetET = (EditText)findViewById(R.id.map_title);
+
+                titleET.setHint("Edit Marker Title");
 
                 deleteButton.setVisibility(View.VISIBLE);
+                editButton.setVisibility(View.VISIBLE);
+                doneButton.setVisibility(View.VISIBLE);
+
+                searchButton.setVisibility(View.GONE);
+                titleSetET.setVisibility(View.GONE);
                 nextButton.setVisibility(View.GONE);
                 previousButton.setVisibility(View.GONE);
 
 
 
-                deleteButton.setOnClickListener( new View.OnClickListener() {
-                    public void onClick(View v)
-                    {
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         RealmResults<Location> result = realm.where(Location.class)
-                                .equalTo("PK", (int)marker.getPosition().latitude + (int)marker.getPosition().longitude)
+                                .equalTo("PK", (int) marker.getPosition().latitude + (int) marker.getPosition().longitude)
                                 .findAll();
 
                         realm.beginTransaction();
@@ -114,9 +126,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         realm.commitTransaction();
 
                         marker.remove();
+
+                        titleET.setHint("Enter Location Name");
+
+                        doneButton.setVisibility(View.GONE);
+                        editButton.setVisibility(View.GONE);
                         deleteButton.setVisibility(View.GONE);
+
+                        titleSetET.setVisibility(View.VISIBLE);
+                        searchButton.setVisibility(View.VISIBLE);
                         nextButton.setVisibility(View.VISIBLE);
                         previousButton.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                editButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+
+                        RealmResults<Location> result = realm.where(Location.class)
+                                .equalTo("PK", (int) marker.getPosition().latitude + (int) marker.getPosition().longitude)
+                                .findAll();
+
+                        realm.beginTransaction();
+                        result.clear();
+                        realm.commitTransaction();
+
+                        marker.remove();
+
+                        String newMarkerLocationName = String.valueOf(titleET.getText());
+
+                        MarkerOptions markerOptions =
+                                new MarkerOptions().position(markerPos)
+                                        .title(newMarkerLocationName)
+                                        .snippet(markerSubCategoryName);
+                        mMap.addMarker(markerOptions);
+
+                        //This is the Realm logic.
+                        Location loc = new Location(); //Initalizes the Location class
+                        loc.setLatitude(markerOptions.getPosition().latitude); //Sets the lat
+                        loc.setLongitude(markerOptions.getPosition().longitude); //Sets the long
+                        loc.setName(newMarkerLocationName); //Sets the name
+                        loc.setPK((int)markerOptions.getPosition().latitude + (int)markerOptions.getPosition().longitude); //Sets the PK (Might want to make this less bad)
+                        realm.beginTransaction(); //Starts the save
+                        realm.copyToRealmOrUpdate(loc); //Saves
+                        realm.commitTransaction(); //Ends the save
+
+                    }
+                });
+
+
+                doneButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+
+                        titleET.setHint("Enter Location Name");
+
+                        doneButton.setVisibility(View.GONE);
+                        editButton.setVisibility(View.GONE);
+                        deleteButton.setVisibility(View.GONE);
+
+                        titleSetET.setVisibility(View.VISIBLE);
+                        searchButton.setVisibility(View.VISIBLE);
+                        nextButton.setVisibility(View.VISIBLE);
+                        previousButton.setVisibility(View.VISIBLE);
+
                     }
                 });
 
