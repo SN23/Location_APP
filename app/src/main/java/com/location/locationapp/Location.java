@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 public class Location extends RealmObject{
 
     @PrimaryKey
-    private int PK;
+    private String PK;
 
     private double latitude;
     private double longitude;
@@ -18,8 +18,8 @@ public class Location extends RealmObject{
     private String name;
     private String description;
 
-    public int    getPK() { return PK; }
-    public void   setPK(int PK) { this.PK = PK; }
+    public String    getPK() { return PK; }
+    public void   setPK(String PK) { this.PK = PK; }
 
     public double    getLatitude() { return latitude; }
     public void   setLatitude(double latitude) { this.latitude = latitude; }

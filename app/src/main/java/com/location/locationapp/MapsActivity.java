@@ -54,12 +54,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-//        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).draggable(false).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//        mMap.setMyLocationEnabled(true);
-
         final Realm realm = Realm.getInstance(this); //Initializes Realm
         RealmResults<Location> result = realm.where(Location.class).findAll();
         if (result.size()>0) {
@@ -76,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             public void onInfoWindowClick(Marker marker) {
-                System.out.println(marker.getId());
+                //System.out.println(marker.getId());
             }
         });
 
@@ -88,9 +82,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final LatLng markerPos=marker.getPosition();
                 final String markerLocationName=marker.getTitle();
                 final String markerSubCategoryName=marker.getSnippet();
-
-
-                System.out.println(marker.getTitle());
 
                 final Button deleteButton = (Button)findViewById(R.id.delete);
                 final Button nextButton = (Button)findViewById(R.id.next);
@@ -118,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         RealmResults<Location> result = realm.where(Location.class)
-                                .equalTo("PK", (int) marker.getPosition().latitude + (int) marker.getPosition().longitude)
+                                .equalTo("PK", marker.getTitle() + String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude))
                                 .findAll();
 
                         realm.beginTransaction();
@@ -144,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onClick(View v) {
 
                         RealmResults<Location> result = realm.where(Location.class)
-                                .equalTo("PK", (int) marker.getPosition().latitude + (int) marker.getPosition().longitude)
+                                .equalTo("PK", marker.getTitle() + String.valueOf(marker.getPosition().latitude) + String.valueOf(marker.getPosition().longitude))
                                 .findAll();
 
                         realm.beginTransaction();
@@ -166,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         loc.setLatitude(markerOptions.getPosition().latitude); //Sets the lat
                         loc.setLongitude(markerOptions.getPosition().longitude); //Sets the long
                         loc.setName(newMarkerLocationName); //Sets the name
-                        loc.setPK((int)markerOptions.getPosition().latitude + (int)markerOptions.getPosition().longitude); //Sets the PK (Might want to make this less bad)
+                        loc.setPK(newMarkerLocationName+String.valueOf(markerOptions.getPosition().latitude) + String.valueOf(markerOptions.getPosition().longitude)); //Sets the PK (Might want to make this less bad)
                         realm.beginTransaction(); //Starts the save
                         realm.copyToRealmOrUpdate(loc); //Saves
                         realm.commitTransaction(); //Ends the save
@@ -192,14 +183,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
 
-
-//                marker.remove();
-//
-//                MarkerOptions markerOptions =
-//                        new MarkerOptions().position(markerPos)
-//                                .title(markerLocationName)
-//                                .snippet(markerSubCategoryName);
-//                mMap.addMarker(markerOptions);
                 return false;
 
             }
@@ -218,11 +201,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
 
         EditText search = (EditText)findViewById(R.id.map_search);
-//        LinearLayout titleLayout = (LinearLayout)findViewById(R.id.title_layout);
         EditText setTitle = (EditText)findViewById(R.id.map_title);
         String title = setTitle.getText().toString();
 
-//        titleLayout.setVisibility(view.VISIBLE); //If you click search, the EditText and Buttons to change the title become visible.
 
         String location = search.getText().toString();
         hideKeyboard(this);
@@ -253,7 +234,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 loc.setLatitude(addressList.get(0).getLatitude()); //Sets the lat
                 loc.setLongitude(addressList.get(0).getLongitude()); //Sets the long
                 loc.setName(title); //Sets the name
-                loc.setPK((int)addressList.get(0).getLatitude() + (int)addressList.get(0).getLongitude()); //Sets the PK (Might want to make this less bad)
+                loc.setPK(title+String.valueOf(addressList.get(0).getLatitude()) + String.valueOf(addressList.get(0).getLongitude())); //Sets the PK (Might want to make this less bad)
                 realm.beginTransaction(); //Starts the save
                 realm.copyToRealmOrUpdate(loc); //Saves
                 realm.commitTransaction(); //Ends the save
@@ -278,12 +259,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //  Moves the screen to the next Marker location
     public void Next(View view){
 
-        if(counter==Markers.size()-1)
+        if(counter==Markers.size())
         {
             counter=0;
         }
             Marker mkr;
-            mkr=Markers.get(counter++);
+            counter++;
+            mkr=Markers.get(counter);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mkr.getPosition(),15));  //20 is the zoom level
     }
 
@@ -300,21 +282,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mkr.getPosition(),15));  //20 is the zoom level
     }
 
-//    public boolean onMarkerClick(Marker marker) { //Called when a marker has been clicked or tapped.
-//
-//        LatLng markerPos=marker.getPosition();
-//        String markerLocationName=marker.getTitle();
-//        String markerSubCategoryName=marker.getSnippet();
-//
-//        marker.remove();
-//
-//        MarkerOptions markerOptions =
-//                new MarkerOptions().position(markerPos)
-//                        .title(markerLocationName)
-//                        .snippet(markerSubCategoryName);// Changing marker icon
-//        mMap.addMarker(markerOptions);
-//        return false;
-//    }
 
 
 }
